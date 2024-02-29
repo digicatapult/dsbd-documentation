@@ -10,6 +10,19 @@ Please consult the [Code of Conduct][conduct] and [contributing guidelines][cont
 ![cicd][cicd]
 
 
+## Getting started
+
+This CI/CD project has two build images, for the host and guest respectively, and several forked dependencies, all of which have been modified for the purposes of adapting them to CheriBSD or to our own infrastructure.
+- [dsbd-github-baseimage][baseimage]: a HashiCorp Packer build stage for creating AWS and Azure host virtual machines, and then using cheribuild.py to create a guest CheriBSD system with additional configuration bundled via the `./extra-files` subdirectories
+- [dsbd-cheribuild][cheribuild]: an all-in-one build script for CHERI-related projects, developed by the University of Cambridge and SRI International
+- [pot][pot]: a third-party BSD jail manager
+- [act-pot-cheribsd][act-pot]: a third-party set of scripts to install and manage jailed runners
+
+Before this project commenced, we had previously developed a physical CheriBSD demonstrator and prepared documentation around it and the ecosystem as it existed between 2022 and 2023. Some documentation may therefore be outdated, but should be useful still for background context.
+- [dsbd-demonstrator][demonstrator]
+- [dsbd-getting-started][start]
+
+
 <!-- TODO: ## Example configuration -->
 
 
@@ -85,8 +98,8 @@ Assuming the above attributes are set, the libraries can then be copied via the 
 
 # Install dependencies
 cp -fR /root/lib64 /usr
-rm -R /root/lib64
 cp -fR /root/lib64cb /usr
+rm -R /root/lib64
 rm -R /root/lib64cb
 
 # ...
@@ -112,15 +125,20 @@ pot create -p downstream -P upstream
 
 
 <!-- Links -->
+[act-pot]:      https://github.com/digicatapult/act-pot-cheribsd
+[baseimage]:    https://github.com/digicatapult/dsbd-github-baseimage
 [cheri]:        https://www.cl.cam.ac.uk/research/security/ctsrd/cheri
-[cheribsd]:     https://github.com/CTSRD-CHERI/cheribsd
 [cheribsd.org]: https://cheribsd.org/
-[cheribuild]:   https://github.com/CTSRD-CHERI/cheribuild
+[cheribsd]:     https://github.com/CTSRD-CHERI/cheribsd
+[cheribuild]:   https://github.com/digicatapult/dsbd-cheribuild
 [cicd]:         /docs/images/cicd.svg
 [conduct]:      /CODE_OF_CONDUCT.md
 [contributing]: /CONTRIBUTING.md
+[demonstrator]: https://github.com/digicatapult/dsbd-demonstrator
+[start]:        https://github.com/digicatapult/dsbd-getting-started
 [llvm]:         https://llvm.org/
 [morello]:      https://www.morello-project.org/
-[pot]:          https://github.com/bsdpot/pot
+[pot]:          https://github.com/digicatapult/pot
 [qemu]:         https://www.qemu.org/
+[readme]:       /README.md
 [witness]:      https://man.freebsd.org/cgi/man.cgi?query=witness
