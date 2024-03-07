@@ -86,7 +86,7 @@ Once you are happy with your example code and workflow, save, commit and push to
 This will be automatically picked up and ran by a runner, if you have not chosen to run your workflow on push or you would like to re-run a job, you will need to choose to run it yourself. As above, navigate to your Repository on github > Actions > Workflows > Select your workflow, click on the newest workflow run and choose to re-run jobs. This will be picked up by runner and ran.
 
 Once the workflow finishes you can click on the job and inspect the different stages by clicking the expand arrow next to each step.
-![Successful workflow](../images/successfult_workflow.png)
+![Successful workflow](../images/successful_workflow.png)
 
 ## Further workflow experimentation
 
