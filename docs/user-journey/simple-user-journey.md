@@ -126,7 +126,7 @@ pkg64 - for hybrid ABI packages
 
 pkg64c - for CheriABI package
 
-pkg64cb - make additional use of cheri capabilities
+pkg64cb - package manager for benchmark ABI
 
 Built packages are registered in separate package repositories that can be managed with separate package managers: pkg64c for CheriABI packages, and pkg64 for hybrid ABI packages. pkg64c and pkg64 are programs compiled for the same ABI as packages they manage, they use separate package repository configuration directories, databases and caches. In short, the package managers are completely unaware of each other. (Source [here][package-difference] page 15)
 
