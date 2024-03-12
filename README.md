@@ -9,22 +9,21 @@ Please consult the [Code of Conduct][conduct] and [contributing guidelines][cont
 
 ![cicd][cicd]
 
-
 ## Getting started
 
 This CI/CD project has two build images, for the host and guest respectively, and several forked dependencies, all of which have been modified for the purposes of adapting them to CheriBSD or to our own infrastructure.
+
 - [dsbd-github-baseimage][baseimage]: a HashiCorp Packer build stage for creating AWS and Azure host virtual machines, and then using cheribuild.py to create a guest CheriBSD system with additional configuration bundled via the `./extra-files` subdirectories
 - [dsbd-cheribuild][cheribuild]: an all-in-one build script for CHERI-related projects, developed by the University of Cambridge and SRI International
 - [pot][pot]: a third-party BSD jail manager
 - [act-pot-cheribsd][act-pot]: a third-party set of scripts to install and manage jailed runners
 
 Before this project commenced, we had previously developed a physical CheriBSD demonstrator and prepared documentation around it and the ecosystem as it existed between 2022 and 2023. Some documentation may therefore be outdated, but should be useful still for background context.
+
 - [dsbd-demonstrator][demonstrator]
 - [dsbd-getting-started][start]
 
-
 <!-- TODO: ## Example configuration -->
-
 
 ## Components
 
@@ -61,7 +60,6 @@ To ensure that hybrid packages install correctly, for example, it will be necess
 ```shell
 pkg64 install -fy curl git pot
 ```
-
 
 ### Pot (jails)
 
@@ -120,25 +118,28 @@ pot snapshot -p upstream
 pot create -p downstream -P upstream
 ```
 
-
 <!-- TODO: ### Act -->
 
+### Example workflows
+
+Simple user journey [here](docs/user-journey/simple-user-journey.md)
 
 <!-- Links -->
-[act-pot]:      https://github.com/digicatapult/act-pot-cheribsd
-[baseimage]:    https://github.com/digicatapult/dsbd-github-baseimage
-[cheri]:        https://www.cl.cam.ac.uk/research/security/ctsrd/cheri
+
+[act-pot]: https://github.com/digicatapult/act-pot-cheribsd
+[baseimage]: https://github.com/digicatapult/dsbd-github-baseimage
+[cheri]: https://www.cl.cam.ac.uk/research/security/ctsrd/cheri
 [cheribsd.org]: https://cheribsd.org/
-[cheribsd]:     https://github.com/CTSRD-CHERI/cheribsd
-[cheribuild]:   https://github.com/digicatapult/dsbd-cheribuild
-[cicd]:         /docs/images/cicd.svg
-[conduct]:      /CODE_OF_CONDUCT.md
+[cheribsd]: https://github.com/CTSRD-CHERI/cheribsd
+[cheribuild]: https://github.com/digicatapult/dsbd-cheribuild
+[cicd]: /docs/images/cicd.svg
+[conduct]: /CODE_OF_CONDUCT.md
 [contributing]: /CONTRIBUTING.md
 [demonstrator]: https://github.com/digicatapult/dsbd-demonstrator
-[start]:        https://github.com/digicatapult/dsbd-getting-started
-[llvm]:         https://llvm.org/
-[morello]:      https://www.morello-project.org/
-[pot]:          https://github.com/digicatapult/pot
-[qemu]:         https://www.qemu.org/
-[readme]:       /README.md
-[witness]:      https://man.freebsd.org/cgi/man.cgi?query=witness
+[start]: https://github.com/digicatapult/dsbd-getting-started
+[llvm]: https://llvm.org/
+[morello]: https://www.morello-project.org/
+[pot]: https://github.com/digicatapult/pot
+[qemu]: https://www.qemu.org/
+[readme]: /README.md
+[witness]: https://man.freebsd.org/cgi/man.cgi?query=witness
