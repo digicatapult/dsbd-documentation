@@ -8,7 +8,6 @@ Examples in this documentation will be written in C and the following workflows 
 ## Example 1: attempting to write beyond the bounds of the allocated memory
 
 You can either create a new file or if you can add the following code to your `main.c` file, in the following examples we will be adding code to `main.c`.
-
 Update your `main.c` file like this:
 
 ```
