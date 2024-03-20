@@ -123,6 +123,8 @@ pot create -p downstream -P upstream
 ### Example workflows
 
 Simple user journey [here](docs/user-journey/simple-user-journey.md)
+Example workflow of compiling and testing [here](docs/how-to/example-workflow-compiling-and-testing.md)
+Example of failed buid and errors [here](docs/how-to/failed-build.md)
 
 <!-- Links -->
 
