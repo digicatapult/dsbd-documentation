@@ -4,14 +4,15 @@ This example will use the LLVM toolchain. We’ll be using GitHub repositories a
 
 Pre-requisites:
 
-cheribsd-morello vm
+- cheribsd-morello vm
 
-repository and a runner created on the vm which is linked to the repository
+- repository and a runner created on the vm which is linked to the repository
 
-Add new workflow, compile and execute a file
-We will create a file, compile and execute it via a github workflow. Next we will add tests and also compile and execute them using github workflow. (The code for this example will be written in C.)
+## Adding and executing a file and workflow
 
-Firstly create a new `src` directory and in it `get-pointer.c` file with an example body:
+In this walkthrough, will create a file, compile and execute it via a github workflow. After that, we will add tests and also compile and execute them using github workflow. (The code for this example will be written in `C`.)
+
+Firstly, create a new `src` directory and in it a file called `get-pointer.c` with an example body:
 
 ```
 /* SPDX-License-Identifier: BSD-2-Clause-DARPA-SSITH-ECATS-HR0011-18-C-0016 */
@@ -39,7 +40,7 @@ int main(void)
 }
 ```
 
-and file `functions.h` (also in `src` directory)
+Next create a file called `functions.h` (also in `src` directory) and paste this in it:
 
 ```
 #ifndef FUNCTIONS_H
@@ -55,7 +56,7 @@ size_t get_address_size(void);
 
 ```
 
-NOTE: a header file (such as `functions.h`) typically contains declarations of functions, types, and other elements that are used across multiple source files. They are separated out as we will be using them in a test file later on.
+NOTE: A header file (such as `functions.h`) typically contains declarations of functions, types, and other elements that are used across multiple source files. They are separated out as we will be using them in a test file later on.
 
 Next we will add a new workflow under `.github/workflows` called `myworkflow.yaml` with body:
 
@@ -87,21 +88,21 @@ jobs:
 
 NOTE: There are 3 stages in our workflow. Installing packages, compiling and execution of the binary.
 
-We need to install LLVM first by doing `pkg64 install -y llvm-base` (With regards to packages: the repository that we're using is [pkg.cheribsd.org][pkg.cheribsd.org]. We have several options for ABIs to compile against, but in this case we want to be using the hybrid ABI. The most relevant list is therefore: [CheriBSD packages: CheriBSD:20230804:aarch64][CheriBSD packages: CheriBSD:20230804:aarch64])
+- We need to install LLVM first by doing `pkg64 install -y llvm-base` (With regards to packages: the repository that we're using is [pkg.cheribsd.org][pkg.cheribsd.org]. We have several options for ABIs to compile against, but in this case we want to be using the hybrid ABI. The most relevant list is therefore: [CheriBSD packages: CheriBSD:20230804:aarch64][CheriBSD packages: CheriBSD:20230804:aarch64].)
 
-Then we compile our `get-pointer.c` file `cc -Wall -o get-pointer src/get-pointer.c` (The format for this command is: `cc -g -Wall -o BINARY_NAME FILE_NAME.c` so we are providing output binary name)
+- Then we compile our `get-pointer.c` file using `cc -Wall -o get-pointer src/get-pointer.c` (The format for this command is: `cc -g -Wall -o BINARY_NAME FILE_NAME.c` so we are providing output binary name.)
 
-Then we execute the binary: `./get-pointer`
+- Then we execute the binary via command `./get-pointer`.
 
-Commit your changes to github and if your runner is not running start it by: pot start -p RUNNER_NAME(You have to be in your vm for this)
+Commit your changes to github and if your runner is not running start it by: `pot start -p RUNNER_NAME`(You have to be in your vm for this.)
 
 Now you can observe the workflow execution on github and stdout on your vm.
 
-NOTE: If you have more than one workflow you will need to start your runner once per workflow as it only runs one queued workflow and then stops
+NOTE: If you have more than one workflow you will need to start your runner once per workflow as it only runs one queued workflow and then stops.
 
 ## Adding and executing a test file and test workflow
 
-In `src` add a new directory `__tests__` and in it a file `get-pointer.test.c`
+In `src` add a new directory `__tests__` and in it a file `get-pointer.test.c`. Paste the following in that file:
 
 ```
 #include <check.h>
@@ -122,9 +123,9 @@ END_TEST
 
 ```
 
-NOTE: if you want to test compilation of your test file locally you will need to install check package. Use a package manager e.g. brew, pkg, apt, etc. to do so
+NOTE: If you want to test compilation of your test file locally, you will need to install `check` package. Use a package manager `e.g. brew, pkg, apt, etc.` to do so.
 
-Add a test workflow under .github/workflows called `tests.yaml` with body:
+Add a test workflow under `.github/workflows` called `tests.yaml` with body:
 
 ```
 name: Unit Tests
@@ -163,13 +164,13 @@ jobs:
 
 ```
 
-NOTE: same as in previous workflow we need to install llvm, but now we also need to install `check` as it is needed for execution of the tests;
+NOTE: Same as in previous workflow we need to install `llvm`, but now we also need to install `check` as it is needed for execution of the tests.
 
-`-I"/usr/local64/include"` includes additional directories to be searched - necessary due to check package being installed [-Idir][ldir] ← definition
+Command `-I"/usr/local64/include"` includes additional directories to be searched - necessary due to `check` package being installed [-Idir][ldir] ← definition.
 
-NOTE: In the `Build binary` step make sure to include all files the test is dependent on (example: `src/__tests__/get-pointer.test.c src/get-pointer.c`)
+NOTE: In the `Build binary` step make sure to include all files the test is dependent on. (For example: `src/__tests__/get-pointer.test.c src/get-pointer.c`.)
 
-file get-pointer-test allows you to view information about the binary
+Command `file get-pointer-test` allows you to view information about the binary.
 
 <!-- Links -->
 

@@ -5,9 +5,9 @@ This documentation assumes you have gone through examples in:
 
 Examples in this documentation will be written in C and the following workflows are expected to fail.
 
-## Example 1: attempting to write beyond the bounds of the allocated memory
+## Example 1: Attempting to write beyond the bounds of the allocated memory
 
-You can either create a new file or if you can add the following code to your `main.c` file, in the following examples we will be adding code to `main.c`.
+You can either create a new file or you can add the following code to your `main.c` file. In the following examples we will be adding code to `main.c`.
 Update your `main.c` file like this:
 
 ```
@@ -67,7 +67,7 @@ jobs:
 
 ```
 
-Once you have made your changes save them and push. A runner should pick up the changes on github and you can see it under your Repository > Actions > Workflows > the latest run of your `myFailingWorkflow` > click into the Job and you should see sth like this:
+Once you have made your changes save them and push. A runner should pick up the changes on github and you can see it under your Repository > Actions > Workflows > the latest run of your `myFailingWorkflow` > click into the Job and you should see something like this:
 
 ![fail memory allocation](../images/failed-memory-allocation.png)
 Expand the `Run Test File` section to see your error message:
@@ -77,7 +77,7 @@ Function jemallocError attempts to allocate memory for a buffer of size 4 bytes 
 
 The reason this code fails is that it is attempting to write beyond the bounds of the allocated memory. When you increment buf by 4 bytes, it moves the pointer past the allocated memory block. Then, when you call `free(buf)`, you are attempting to free memory that was not allocated by malloc, as buf has been modified.
 
-## Example 2: buffer overflow
+## Example 2: Buffer overflow
 
 In this example we will attempt to allocate certain size of a memory to a buffer, but then we will attempt to store information requiring larger amount of memory allocated.
 
@@ -119,12 +119,12 @@ int main(void)
 }
 ```
 
-You needn’t make any changes in your `myfailingworkflow.yaml`. Push your changes and observe in your `Actions` the latest `job`. as previously, this should fail at the `Run Test File` step. Expand this step to observe the error message. It should look like so:
+You needn’t make any changes in your `myfailingworkflow.yaml`. Push your changes and observe in your `Actions` the latest `Job`. As previously, this should fail at the `Run Test File` step. Expand this step to observe the error message. It should look like this:
 ![buffer overflow error](../images/buffer-overflowerror.png)
 
-## Example 3: attempting to call attacker-controlled memory address
+## Example 3: Attempting to call attacker-controlled memory address
 
-modify your `main.c` file like so:
+Modify your `main.c` file like so:
 
 ```
 #include <stdio.h>
@@ -152,12 +152,12 @@ int main(void)
 }
 ```
 
-Save, commit and push and you should see an error like so:
+Save, commit and push your changes and you should see an error like so:
 ![code injection error](../images/code-injection-error.png)
 
 If we wanted to make sure that a called function originates from an authorised memory region, we need to make sure the function comes from within our program.
 
-for example:
+For example:
 
 ```
 #include <stdio.h>
