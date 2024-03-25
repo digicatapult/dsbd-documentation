@@ -8,9 +8,9 @@ Pre-requisites:
 
 - repository and a runner created on the vm which is linked to the repository
 
-## Adding and executing a file and workflow
-
 In this walkthrough, will create a file, compile and execute it via a github workflow. After that, we will add tests and also compile and execute them using github workflow. (The code for this example will be written in `C`.)
+
+## Adding and executing a file and workflow
 
 Firstly, create a new `src` directory and in it a file called `get-pointer.c` with an example body:
 
