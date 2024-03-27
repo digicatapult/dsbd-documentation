@@ -23,7 +23,11 @@ Before this project commenced, we had previously developed a physical CheriBSD d
 - [dsbd-demonstrator][demonstrator]
 - [dsbd-getting-started][start]
 
-<!-- TODO: ## Example configuration -->
+### Example workflows
+
+- Simple user journey [here](./docs/user-journey/simple-user-journey.md)
+- Example workflow of compiling and testing [here](./docs/how-to/example-workflow-compiling-and-testing.md)
+- Example of failed buid and errors [here](./docs/how-to/failed-build.md)
 
 ## Components
 
@@ -120,12 +124,6 @@ pot create -p downstream -P upstream
 
 <!-- TODO: ### Act -->
 
-### Example workflows
-
-Simple user journey [here](docs/user-journey/simple-user-journey.md)
-Example workflow of compiling and testing [here](docs/how-to/example-workflow-compiling-and-testing.md)
-Example of failed buid and errors [here](docs/how-to/failed-build.md)
-
 <!-- Links -->
 
 [act-pot]: https://github.com/digicatapult/act-pot-cheribsd
@@ -134,7 +132,7 @@ Example of failed buid and errors [here](docs/how-to/failed-build.md)
 [cheribsd.org]: https://cheribsd.org/
 [cheribsd]: https://github.com/CTSRD-CHERI/cheribsd
 [cheribuild]: https://github.com/digicatapult/dsbd-cheribuild
-[cicd]: /docs/images/cicd.svg
+[cicd]: ./docs/images/cicd.svg
 [conduct]: /CODE_OF_CONDUCT.md
 [contributing]: /CONTRIBUTING.md
 [demonstrator]: https://github.com/digicatapult/dsbd-demonstrator
