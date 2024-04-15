@@ -62,7 +62,7 @@ There are now three ABIs specific to CheriBSD: "hybrid", "purecap" (CheriABI), a
 To ensure that hybrid packages install correctly, for example, it will be necessary to force the installation with `-fy` or bootstrap `pkg64` beforehand with `pkg64 bootstrap -fy`.
 
 ```shell
-pkg64 install -fy curl git pot
+pkg64 install -y curl git pot
 ```
 
 ### Pot (jails)
@@ -71,13 +71,26 @@ This lab utilises [Pot][pot], a third-party command-line BSD jail manager, to cr
 Pot itself is a series of shell (sh) scripts that can be used to create, clone, and configure jails, control the extent of the system's isolation, and establish public or private bridges and IPs.
 
 ```shell
-git -C $HOME clone https://github.com/digicatapult/pot
-cd $HOME/pot
-pot create-base -r 23.11
+git clone https://github.com/digicatapult/pot
+cd pot
+for dir in bin etc share; do
+    cp -fR ./$dir /usr/local64/
+done
+pot init
 ```
 
-When a CheriBSD pot is created using this fork, it will attempt to fetch suitable OS manifests from [cheribsd.org][cheribsd.org] and extract the tarballs.
-Yet it lacks any explicit reference to the host's libraries for certain ABIs, `/usr/lib64` (hybrid) and `/usr/lib64cb` (benchmark) respectively, hence these need to be copied into the jail via the use of Pot's flavours.
+When a CheriBSD pot is created using this fork, it will attempt to fetch suitable OS manifests from [cheribsd.org][cheribsd.org] and extract the tarballs. They can also be downloaded manually:
+
+```shell
+manifests="/usr/local/share/freebsd/MANIFESTS"
+mkdir -p $manifests
+releases=$(curl -sS "https://download.cheribsd.org/releases/arm64/aarch64c/" | grep -Eo "\w{1,}\.\w{1,}" | sort -u)
+for release in $releases; do
+    curl -sS -C - "https://download.cheribsd.org/releases/arm64/aarch64c/$release/ftp/MANIFEST" > "$manifests/arm64-aarch64c-$release-RELEASE"
+done
+```
+
+Pots lack any explicit reference to the host's libraries for certain ABIs, `/usr/lib64` (hybrid) and `/usr/lib64cb` (benchmark) respectively, hence these need to be copied into the jail via the use of Pot's "flavours".
 Flavours serve as modular components that Pot executes against each jail when it is first created or subsequently cloned.
 Syntatically, a flavour is either a pot subcommand, such as `set-attr`, or itself a shell script that the jail will execute on initialisation.
 In our case, we can use a flavour to bootstrap the jail with the requisite libraries, copying from the host first to `/root` and then using a script to copy from within the jail itself to `/usr/lib64`.
@@ -88,41 +101,49 @@ Our custom `./flavours/bootstrap` file might look like this:
 copy-in -s /usr/lib64 -d /root/lib64
 copy-in -s /usr/lib64cb -d /root/lib64cb
 set-attribute -A no-tmpfs -V ON
-set-attribute -A nullfs -V ON
-set-attribute -A zfs -V ON
 ```
 
 Disabling the temporary filesystem (`no-tmpfs`) is necessary to prevent any issues affecting the FS lock order when used in conjunction with OpenZFS, else [Witness][witness] will trigger a panic and the jail creation process will fail.
-Assuming the above attributes are set, the libraries can then be copied via the jail's own terminal or by using a start-up script to achieve the same:
+Assuming the above attributes are set, the libraries can then be copied via the jail's own terminal or by using a start-up script to achieve the same.
+We should now be able to create a jail pair that fully supports `pkg64`, `pkg64c`, and `pkg64cb`, with the following example:
 
 ```shell
-#!/bin/sh
-
-# Install dependencies
-cp -fR /root/lib64 /usr
-cp -fR /root/lib64cb /usr
-rm -R /root/lib64
-rm -R /root/lib64cb
-
-# ...
+pot create -p sibling -b 23.11 -t single -f bootstrap
+pot start -p sibling
+pot exec -p sibling cp -R /root/lib64 /usr
+pot exec -p sibling cp -R /root/lib64cb /usr
+pot exec -p sibling rm -rdf /root/lib64
+pot exec -p sibling rm -rdf /root/lib64cb
+pot exec -p sibling pkg64 install -y bash curl git node readline
+pot stop -p sibling
+pot snap -p sibling
 ```
 
-We should now be able to create a jail pair that fully supports `pkg64`,
-`pkg64c`, and `pkg64cb`, with the following example:
+After bootstrapping an upstream pot, we can move to installing the scripts to execute runners.
+
+### Act (GitHub self-hosted runners)
+
+We next pass configuration variables and download the [github-act-runner][github-act-runner] binary to individual pots using [act-pot-cheribsd][act-pot], a set of wrapper scripts that help to automatically create, rename, and destroy the jails as required.
+Installing the scripts to the CheriBSD guest is straightforward:
 
 ```shell
-pot create -p upstream -r 23.11 -t single \
-    -f ./flavours/bootstrap
-pot start -p upstream
-pot exec -p upstream chmod 700 /root/copy.sh
-pot exec -p upstream /root/copy.sh
-pot exec -p upstream pkg64 -N
-pot stop -p upstream
-pot snapshot -p upstream
-pot create -p downstream -P upstream
+git clone https://github.com/digicatapult/act-pot-cheribsd
+cd act-pot-cheribsd
+./install.sh
 ```
 
-<!-- TODO: ### Act -->
+We are now set to configure and start the first runner.
+
+```shell
+./config.sh --url [GITHUB_ORG] --token [GITHUB_TOKEN]
+sysrc gh_actions_enable="YES"
+./jobs/restart_actions.sh
+```
+
+This last srcipt can be run manually or via `crontab` to automate the initialisation of ephemeral pots when the guest has finished booting.
+It merely ensures that the system variable (rcvar) `gh_actions_pots` always has the most up-to-date pot names.
+
+At this point, the guest system is now ready to process a GitHub workflow.
 
 <!-- Links -->
 
@@ -143,3 +164,5 @@ pot create -p downstream -P upstream
 [qemu]: https://www.qemu.org/
 [readme]: /README.md
 [witness]: https://man.freebsd.org/cgi/man.cgi?query=witness
+[github-act-runner]: https://github.com/ChristopherHX/github-act-runner
+[act-pot]: https://github.com/digicatapult/act-pot-cheribsd
