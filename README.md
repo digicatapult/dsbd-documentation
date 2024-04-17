@@ -59,7 +59,7 @@ Our example below is specific to the Morello CPU architecture, taking a single t
 ```
 
 There are now three ABIs specific to CheriBSD: "hybrid", "purecap" (CheriABI), and "benchmark", each with their own flavour of FreeBSD's package manager and their own libraries.
-To ensure that hybrid packages install correctly, for example, it will be necessary to force the installation with `-fy` or bootstrap `pkg64` beforehand with `pkg64 bootstrap -fy`.
+Bootstrapping either pkg64, pkg64c, or pkg64cb will only be necessary once for the host, and will occur automatically when any of them are used to install packages.
 
 ```shell
 pkg64 install -y curl git pot
